@@ -25,4 +25,4 @@ const HomePage: NextPage = () => {
   )
 }
 
-export default HomePage
+export default HomePage;
