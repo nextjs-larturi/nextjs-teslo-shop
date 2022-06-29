@@ -1,12 +1,14 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import { AppBar, Toolbar, Typography, Link, Box, Button, IconButton, Badge } from '@mui/material';
 import { SearchOutlined, ShoppingCartOutlined } from '@mui/icons-material';
+import { UiContext } from '../../context';
 
 export const Navbar = () => {
 
   const { asPath } = useRouter();
+  const { toggleSideMenu } = useContext(UiContext);  
 
   const setColorButon = (path: string) => (asPath === path) ? 'primary' : 'info';
   
@@ -56,7 +58,11 @@ export const Navbar = () => {
                 </Link>
             </NextLink>
 
-            <Button>Menu</Button>
+            <Button 
+                onClick={toggleSideMenu}
+            >
+                Menu
+            </Button>
 
         </Toolbar>
     </AppBar>
