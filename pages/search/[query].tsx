@@ -1,20 +1,32 @@
 import type { NextPage, GetServerSideProps } from 'next';
-import { Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { ShopLayout } from '../../components/layouts';
 import { ProductList } from '../../components/products';
 import { getProductsByTerms } from '../../database/dbProducts';
 import { IProduct } from '../../interfaces/products';
+import { dbProducts } from '../../database';
 
 interface Props {
     products: IProduct[];
+    productsExists: boolean;
+    query: string;
 }
 
-const SearchPage: NextPage<Props> = ({ products }) => {
+const SearchPage: NextPage<Props> = ({ products, productsExists, query }) => {
 
   return (
     <ShopLayout title={'Teslo-Shop: Search'} pageDescription={'Encuentra los productos que buscas en Teslo-Shop!'}>
-      <Typography variant='h1' component='h1'>Buscar producto</Typography>
-      <Typography variant='h2' sx={{ mb: 1 }}>ABC -- 123</Typography>
+      <Typography variant='h1' component='h1'>Buscar productos</Typography>
+
+      {
+        productsExists
+        ? <Typography variant='h2' sx={{ mb: 1, mt: 2 }}>Término: {query}</Typography>
+        : <Box display="flex">
+            <Typography variant='h2' sx={{ mb: 3 }}>No encontramos ningún producto con el término: </Typography>
+            <Typography variant='h2' sx={{ mb: 3, ml: 1 }} color='secondary'>{query}</Typography>
+          </Box>
+
+      }
       <ProductList products={ products } />
     </ShopLayout>
   )
@@ -33,12 +45,21 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
             }
         }
     }
-
+    
     let products = await getProductsByTerms(query);
+
+    const productsExists = products.length > 0;
+
+    if(!productsExists) {
+        // Si no hay productos muestro sugerencias
+        products = await dbProducts.getProductsByTerms('shirt');
+    }
 
     return {
         props: {
-            products
+            products,
+            productsExists,
+            query,
         }
     }
 }
