@@ -48,6 +48,18 @@ export const SideMenu = () => {
     router.push(url);
   };
 
+  // Fix porque no anda autoFocus
+  const textFieldInputFocus = (inputRef: any) => {
+    if (inputRef && inputRef.node !== null) {
+      setTimeout(() => {
+        inputRef.focus()
+      }, 100)
+    }
+    return inputRef;
+  }
+  let textFieldProps = { inputRef: textFieldInputFocus }        
+       
+
   return (
     <Drawer
         open={isMenuOpen}
@@ -61,6 +73,7 @@ export const SideMenu = () => {
 
                 <ListItem>
                     <Input
+                        {...textFieldProps}
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                         onKeyPress={(e) => e.key === 'Enter' ? onSearchTerm() : null}

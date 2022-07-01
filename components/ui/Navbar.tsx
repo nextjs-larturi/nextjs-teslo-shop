@@ -1,16 +1,34 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
-import { AppBar, Toolbar, Typography, Link, Box, Button, IconButton, Badge } from '@mui/material';
-import { SearchOutlined, ShoppingCartOutlined } from '@mui/icons-material';
+import { AppBar, Toolbar, Typography, Link, Box, Button, IconButton, Badge, Input, InputAdornment } from '@mui/material';
+import { ClearOutlined, SearchOutlined, ShoppingCartOutlined } from '@mui/icons-material';
 import { UiContext } from '../../context';
 
 export const Navbar = () => {
 
-  const { asPath } = useRouter();
+  const { asPath, push } = useRouter();
   const { toggleSideMenu } = useContext(UiContext);  
+  const [searchTerm, setSearchTerm] = useState('');
+  const [isSearchVisible, setIsSearchVisible] = useState(false);
 
   const setColorButon = (path: string) => (asPath === path) ? 'primary' : 'info';
+
+  const onSearchTerm = () => {
+    if(searchTerm.trim().length === 0) return;
+    push(`/search/${searchTerm}`);
+  };
+  
+  // Fix porque no anda autoFocus
+  const textFieldInputFocus = (inputRef: any) => {
+    if (inputRef && inputRef.node !== null) {
+      setTimeout(() => {
+        inputRef.focus()
+      }, 100)
+    }
+    return inputRef;
+  }
+  let textFieldProps = { inputRef: textFieldInputFocus }      
   
   return (
     <AppBar>
@@ -24,7 +42,10 @@ export const Navbar = () => {
 
             <Box flex={1} />
 
-            <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
+            <Box 
+                sx={{ display: isSearchVisible ? 'none' : { xs: 'none', sm: 'block' } }}
+                className='fadeIn'
+            >
                 <NextLink href='/category/men' passHref>
                     <Link>
                         <Button color={setColorButon('/category/men')}>Hombres</Button>
@@ -44,7 +65,44 @@ export const Navbar = () => {
 
             <Box flex={1} />
 
-            <IconButton>
+            {/* Desktop */}
+            {
+                isSearchVisible 
+                    ? (
+                        <Input
+                            sx={{ display: { xs: 'none', sm: 'flex' } }}
+                            className='fadeIn'
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            onKeyPress={(e) => e.key === 'Enter' ? onSearchTerm() : null}
+                            type='text'
+                            placeholder="Buscar..."
+                            endAdornment={
+                                <InputAdornment position="end">
+                                    <IconButton
+                                        onClick={() => setIsSearchVisible(false) }
+                                    >
+                                    <ClearOutlined />
+                                    </IconButton>
+                                </InputAdornment>
+                            }
+                        />
+                    ) : (
+                        <IconButton
+                            onClick={ () => setIsSearchVisible(true) }
+                            className="fadeIn"
+                            sx={{ display: { xs: 'none', sm: 'flex' } }}
+                        >
+                           <SearchOutlined />
+                        </IconButton>
+                    )
+            }
+            
+            {/* Mobile */}
+            <IconButton
+                sx={{ display: {xs: 'flex', sm: 'none' } }}
+                onClick={toggleSideMenu}
+            >
                 <SearchOutlined />
             </IconButton>
 
