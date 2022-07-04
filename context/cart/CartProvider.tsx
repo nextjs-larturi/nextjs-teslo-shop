@@ -1,4 +1,6 @@
-import { FC, useReducer } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import { FC, useEffect, useReducer, useRef } from 'react';
+import Cookie from 'js-cookie';
 import { CartContext, cartReducer } from './';
 import { ICartProduct } from '../../interfaces/cart';
 
@@ -17,6 +19,27 @@ interface Props {
 export const CartProvider:FC<Props> = ({ children }) => {
 
     const [state, dispatch] = useReducer(cartReducer, CART_INITIAL_STATE);
+
+    // Si el carrito esta en cookies, actualizo el state
+    useEffect(() => {
+        try {
+            const cookieCart = Cookie.get('cart') ? JSON.parse(Cookie.get('cart')!) : [];
+            console.log(cookieCart);
+            dispatch({ type: 'CART_LOAD_FROM_COOKIES', payload: cookieCart });
+        } catch (error) {
+            dispatch({ type: 'CART_LOAD_FROM_COOKIES', payload: [] });
+        }
+    }, [])
+
+    // Graba en cookies el carrito
+    const isCartReloading = useRef(true);
+    useEffect(() => {
+        if (isCartReloading.current) {
+            isCartReloading.current = false;
+        } else {
+            Cookie.set('cart', JSON.stringify(state.cart));
+        }
+    }, [state.cart])
 
     const addProductToCart = (product: ICartProduct) => {
 
