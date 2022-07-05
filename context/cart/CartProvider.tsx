@@ -40,6 +40,20 @@ export const CartProvider:FC<Props> = ({ children }) => {
         }
     }, [state.cart])
 
+    useEffect(() => {
+        const numberOfItems = state.cart.reduce((prev, current) => current.quantity + prev, 0);
+        const subtotal = state.cart.reduce((prev, current) => (current.price * current.quantity) + prev, 0);
+        const taxRate = Number(process.env.NEXT_PUBLIC_TAX_RATE || 0);
+
+        const orderSummary = {
+            numberOfItems,
+            subtotal,
+            tax: subtotal * taxRate,
+            total: subtotal * (taxRate + 1),
+        }
+        console.log(orderSummary);
+    }, [state.cart])
+
     const addProductToCart = (product: ICartProduct) => {
 
         // Verifico que exista un producto con el id
@@ -76,6 +90,10 @@ export const CartProvider:FC<Props> = ({ children }) => {
         dispatch({ type: 'CART_CHANGE_PRODUCTS_QUANTITY', payload: product })
     }
 
+    const removeCartProduct = (product : ICartProduct) => {
+        dispatch({ type: 'REMOVE_PRODUCT_IN_CART', payload: product })
+    }
+
     return (
         <CartContext.Provider value={{
             ...state,
@@ -83,6 +101,7 @@ export const CartProvider:FC<Props> = ({ children }) => {
             // Methods
             addProductToCart,
             updateCartQuantity,
+            removeCartProduct,
         }}>
             { children }
         </CartContext.Provider>

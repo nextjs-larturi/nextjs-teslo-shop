@@ -27,7 +27,6 @@ const getProductBySlug = async (req: NextApiRequest, res: NextApiResponse<Data>)
                                   .select('title images price inStock slug -_id')
                                   .lean();
 
-    console.log(product);
     await db.disconnect();
 
     if (!product) {
