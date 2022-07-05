@@ -24,7 +24,6 @@ export const CartProvider:FC<Props> = ({ children }) => {
     useEffect(() => {
         try {
             const cookieCart = Cookie.get('cart') ? JSON.parse(Cookie.get('cart')!) : [];
-            console.log(cookieCart);
             dispatch({ type: 'CART_LOAD_FROM_COOKIES', payload: cookieCart });
         } catch (error) {
             dispatch({ type: 'CART_LOAD_FROM_COOKIES', payload: [] });
@@ -73,12 +72,17 @@ export const CartProvider:FC<Props> = ({ children }) => {
         });
     }
 
+    const updateCartQuantity = (product : ICartProduct) => {
+        dispatch({ type: 'CART_CHANGE_PRODUCTS_QUANTITY', payload: product })
+    }
+
     return (
         <CartContext.Provider value={{
             ...state,
 
             // Methods
             addProductToCart,
+            updateCartQuantity,
         }}>
             { children }
         </CartContext.Provider>

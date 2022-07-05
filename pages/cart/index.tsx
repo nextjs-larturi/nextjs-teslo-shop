@@ -1,14 +1,18 @@
+import React, { useContext } from 'react';
 import { Button, Card, CardContent, Divider, Grid, Typography } from '@mui/material';
 import { Box } from '@mui/system';
-import React from 'react';
 import { ShopLayout } from '../../components/layouts/ShopLayout';
 import { CartList } from '../../components/cart/CartList';
 import { OrderSummary } from '../../components/cart';
+import { CartContext } from '../../context';
 
 export const CartPage = () => {
+
+  const { cart } = useContext(CartContext);
+
   return (
     <ShopLayout
-        title='Carrito (3)'
+        title={`Mi Carrito: (${cart.length} productos)`}
         pageDescription='Carrito de compras'
     >
         <Typography variant='h1' component='h1' sx={{ mb:2 }}>
