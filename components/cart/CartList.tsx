@@ -12,6 +12,7 @@ import {
 import { ItemCounter } from '../ui';
 import { CartContext } from '../../context';
 import { ICartProduct } from '../../interfaces';
+import { currency } from '../../utils';
 
 interface Props {
    editable?: boolean;
@@ -85,7 +86,7 @@ export const CartList: FC<Props> = ({ editable = false }) => {
                   alignItems='left'
                   flexDirection='column'
                >
-                  <Typography variant='subtitle1'>${product.price}</Typography>
+                  <Typography variant='subtitle1'>{currency.format(product.price)}</Typography>
                </Grid>
             </Grid>
          ))}

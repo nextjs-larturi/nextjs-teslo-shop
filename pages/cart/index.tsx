@@ -12,7 +12,7 @@ export const CartPage = () => {
 
   return (
     <ShopLayout
-        title={`Mi Carrito: (${cart.length} productos)`}
+        title={`Mi Carrito`}
         pageDescription='Carrito de compras'
     >
         <Typography variant='h1' component='h1' sx={{ mb:2 }}>
