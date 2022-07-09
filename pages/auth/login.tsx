@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import NextLink from 'next/link'; 
-import { Box, Button, Grid, Link, TextField, Typography } from '@mui/material';
-import { useForm, SubmitHandler } from "react-hook-form";
-
+import { Box, Button, Chip, Grid, Link, TextField, Typography } from '@mui/material';
+import { useForm } from "react-hook-form";
+import { ErrorOutline } from '@mui/icons-material';
 import { AuthLayout } from '../../components/layouts';
 import { validations } from '../../utils';
+import { tesloApi } from '../../api';
 
 type FormData = {
     email: string,
@@ -13,10 +14,23 @@ type FormData = {
 
 const LoginPage = () => {
 
+  const [ showError, setShowError ] = useState(false);
+
   const { register, handleSubmit, formState: { errors } } = useForm<FormData>();
 
-  const onLoginUser = (data: FormData) => {
-    console.log(data);
+  const onLoginUser = async ( {email, password}: FormData) => {
+
+    setShowError(false);
+
+    try {
+        const { data } = await tesloApi.post('/user/login', { email, password });
+        const { token, user } = data;
+    } catch (error) {
+        setShowError(true);
+        setTimeout(() => {
+            setShowError(false);
+        }, 3000);
+    }
   } 
 
   return (
@@ -25,14 +39,21 @@ const LoginPage = () => {
             <Box sx={{ width: 350, padding: '10px 20px' }}>
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
-                        <Typography variant='h1' component='h1'>Iniciar Sesión</Typography>
+                        <Typography variant='h1' component='h1' textAlign='center'>Iniciar Sesión</Typography>
+                        <Chip
+                            label='Usuario y/o password incorrectos'
+                            color='error'
+                            icon={<ErrorOutline />} 
+                            className='fadeIn'
+                            sx={{ width: '100%', marginTop: '10px', display: showError ? 'flex' : 'none' }}
+                        />
                     </Grid>
 
                     <Grid item xs={12}>
                         <TextField 
-                            label="Correo" 
-                            variant="filled" 
-                            type="email"
+                            label='Correo' 
+                            variant='filled' 
+                            type='email'
                             fullWidth
                             { ...register('email', {
                                 required: 'El email es requerido',
