@@ -5,7 +5,7 @@ import { lightTheme } from '../themes';
 import { UiProvider } from '../context/ui/UiProvider';
 
 import '../styles/globals.css';
-import { CartProvider } from '../context';
+import { AuthProvider, CartProvider } from '../context';
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
@@ -15,14 +15,16 @@ function MyApp({ Component, pageProps }: AppProps) {
         fetcher: (resource, init) => fetch(resource, init).then(res => res.json())
       }}
     >
-      <CartProvider>
-        <UiProvider>
-          <ThemeProvider theme={lightTheme}>
-            <CssBaseline />
-            <Component {...pageProps} />
-          </ThemeProvider>
-        </UiProvider>
-      </CartProvider>
+      <AuthProvider>
+        <CartProvider>
+          <UiProvider>
+            <ThemeProvider theme={lightTheme}>
+              <CssBaseline />
+              <Component {...pageProps} />
+            </ThemeProvider>
+          </UiProvider>
+        </CartProvider>
+      </AuthProvider>
     </SWRConfig>
   )
 }
