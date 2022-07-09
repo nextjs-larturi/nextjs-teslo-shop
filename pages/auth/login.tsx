@@ -10,7 +10,7 @@ import { tesloApi } from '../../api';
 type FormData = {
     email: string,
     password: string,
-  };
+};
 
 const LoginPage = () => {
 
