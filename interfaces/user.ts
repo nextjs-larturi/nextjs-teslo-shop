@@ -7,3 +7,8 @@ export interface IUser {
     createdAt: string;
     updatedAt: string;
 }
+
+export interface UserRegistered {
+    hasError: boolean;
+    message?: string
+}
