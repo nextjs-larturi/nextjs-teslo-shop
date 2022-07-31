@@ -69,6 +69,8 @@ export const AddressPage = () => {
   )
 }
 
+// Forma de verificar si esta autenticado sin middleware
+// A partir de la v12 de Next nos ofrecen middlewares
 export const getServerSideProps: GetServerSideProps = async ({req}) => {
     const { token = '' } = req.cookies;
     let isValidToken = false;
