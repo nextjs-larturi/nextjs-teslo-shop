@@ -6,7 +6,6 @@ import { ErrorOutline } from '@mui/icons-material';
 import { AuthContext } from '../../context';
 import { AuthLayout } from '../../components/layouts';
 import { validations } from '../../utils';
-import { tesloApi } from '../../api';
 import { useRouter } from 'next/router';
 
 type FormData = {
@@ -19,8 +18,9 @@ const LoginPage = () => {
   const router = useRouter();  
   const { login } = useContext(AuthContext);
   const [ showError, setShowError ] = useState(false);
+  const [ registerUrlParameter, setRegisterUrlParameter ] = useState('');
   const { register, handleSubmit, formState: { errors } } = useForm<FormData>();
-
+  
   const onLoginUser = async ( {email, password}: FormData) => {
 
     setShowError(false);
@@ -33,7 +33,7 @@ const LoginPage = () => {
         return;
     }
 
-    const destination = router.query.p?.toString() || '/'
+    const destination = router.query.p?.toString() || '/';
     router.replace(destination);
   } 
 
@@ -96,7 +96,7 @@ const LoginPage = () => {
                     </Grid>
 
                     <Grid item xs={12} display='flex' justifyContent='end'>
-                        <NextLink href="/auth/register" passHref>
+                        <NextLink href={ router.query.p ? `/auth/register?p=${router.query.p}` : '/auth/register' } passHref>
                             <Link underline='always'>
                                 No tienes cuenta?
                             </Link>

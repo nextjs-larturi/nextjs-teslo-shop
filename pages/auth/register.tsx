@@ -6,7 +6,6 @@ import { ErrorOutline } from '@mui/icons-material';
 import { useForm } from "react-hook-form";
 import { AuthLayout } from '../../components/layouts';
 import { validations } from '../../utils';
-import { tesloApi } from '../../api';
 import { AuthContext } from '../../context';
 
 type FormData = {
@@ -22,6 +21,7 @@ const RegisterPage = () => {
 
   const [ showError, setShowError ] = useState(false);
   const [ errorMessage, setErrorMessage ] = useState('');
+  const [ loginUrlParameter, setLoginUrlParameter ] = useState('');
 
   const { register, handleSubmit, formState: { errors } } = useForm<FormData>();
 
@@ -113,7 +113,7 @@ const RegisterPage = () => {
                     </Grid>
 
                     <Grid item xs={12} display='flex' justifyContent='end'>
-                        <NextLink href="/auth/login" passHref>
+                        <NextLink href={ router.query.p ? `/auth/login?p=${router.query.p}` : '/auth/login' } passHref>
                             <Link underline='always'>
                                 Iniciar Sesión
                             </Link>
