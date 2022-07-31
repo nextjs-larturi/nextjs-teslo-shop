@@ -21,6 +21,7 @@ export const cartReducer = (state: CartState, action: CartActionType): CartState
         case 'CART_LOAD_FROM_COOKIES':
             return {
                ...state,
+               isLoaded: true,
                cart: [ ...action.payload ],
             };
 
