@@ -3,6 +3,8 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 import GithubProvider from 'next-auth/providers/github';
 import GoogleProvider from "next-auth/providers/google";
 import FacebookProvider from "next-auth/providers/facebook";
+import { dbUsers } from '../../../database';
+import { checkUserEmailPassword } from '../../../database/dbUsers';
 
 export default NextAuth({
   providers: [
@@ -14,7 +16,7 @@ export default NextAuth({
         password: { label: 'Password:', type: 'password', placeholder: 'Password' },
       },
       async authorize(credentials) {
-        return { name: 'Leandro', email: 'pepe@pepe.com', role: 'admin' };
+        return await dbUsers.checkUserEmailPassword(credentials!.email, credentials!.password);
       }
     }),
     GithubProvider({

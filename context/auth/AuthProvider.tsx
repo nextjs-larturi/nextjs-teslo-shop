@@ -1,6 +1,6 @@
 import { FC, useReducer, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { useSession } from 'next-auth/react';
+import { useSession, signOut } from 'next-auth/react';
 import Cookies from 'js-cookie';
 import axios from 'axios';
 import { tesloApi } from '../../api';
@@ -31,16 +31,13 @@ export const AuthProvider:FC<Props> = ({ children }) => {
     useEffect(() => {
         if(status === 'authenticated') {
             console.log(data?.user);
-            // dispatch({
-            //     type: 'AUTH_LOGIN',
-            //     payload: data?.user as IUser
-            // });
+            dispatch({
+                type: 'AUTH_LOGIN',
+                payload: data?.user as IUser
+            });
         }
     }, [status, data]);
 
-    // useEffect(() => {
-    //     checkToken();
-    // }, []);
 
     const checkToken = async () => {
 
@@ -96,9 +93,17 @@ export const AuthProvider:FC<Props> = ({ children }) => {
     }
 
     const logout = () => {
-        Cookies.remove('token');
         Cookies.remove('cart');
-        router.reload();
+        Cookies.remove('fistName');
+        Cookies.remove('lastName');
+        Cookies.remove('address');
+        Cookies.remove('address2');
+        Cookies.remove('zip');
+        Cookies.remove('city');
+        Cookies.remove('country');
+        Cookies.remove('phone');
+
+        signOut();
     }
 
     return (
