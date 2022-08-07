@@ -1,0 +1,36 @@
+
+.providerBtn {
+    font-size: 14px !important;
+    height: 45px !important;
+    border-radius: 45px !important;
+}
+
+.githubBtn {
+    background-color: black !important;
+    color: aliceblue !important;
+    border-color: black;
+}
+
+.facebookBtn {
+    background-color: #0C90F2 !important;
+    color: aliceblue !important;
+    border-color: #0C90F2;
+}
+
+.googleBtn {
+    background-color: #F72925 !important;
+    color: aliceblue !important;
+    border-color: #F72925;
+}
+
+.githubBtn:hover {
+    background-color: #32373a !important;
+}
+
+.facebookBtn:hover {
+    background-color: #0e4c7c !important;
+}
+
+.googleBtn:hover {
+    background-color: #a91c1a !important;
+}

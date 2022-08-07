@@ -1,14 +1,15 @@
-import React, { useContext, useState } from 'react';
+import React, { useState , useEffect } from 'react';
 import { GetServerSideProps } from 'next';
-import { signIn, getSession } from 'next-auth/react';
+import { signIn, getSession, getProviders } from 'next-auth/react';
 import NextLink from 'next/link'; 
-import { Box, Button, Chip, Grid, Link, TextField, Typography } from '@mui/material';
+import { Box, Button, Chip, Divider, Grid, Link, TextField, Typography } from '@mui/material';
 import { useForm } from "react-hook-form";
 import { ErrorOutline } from '@mui/icons-material';
-import { AuthContext } from '../../context';
 import { AuthLayout } from '../../components/layouts';
 import { validations } from '../../utils';
 import { useRouter } from 'next/router';
+
+import styles from "./login.module.css";
 
 type FormData = {
     email: string,
@@ -18,10 +19,17 @@ type FormData = {
 const LoginPage = () => {
 
   const router = useRouter();  
-  const { login } = useContext(AuthContext);
   const [ showError, setShowError ] = useState(false);
-  const [ registerUrlParameter, setRegisterUrlParameter ] = useState('');
   const { register, handleSubmit, formState: { errors } } = useForm<FormData>();
+
+  const [ providers, setProviders ] = useState<any>({});
+
+  useEffect(() => {
+    getProviders().then(providers => {
+        setProviders(providers);
+    })
+  }, [])
+  
   
   const onLoginUser = async ( {email, password}: FormData) => {
     setShowError(false);
@@ -92,6 +100,47 @@ const LoginPage = () => {
                                 No tienes cuenta?
                             </Link>
                         </NextLink>
+                    </Grid>
+
+                    <Grid item xs={12} display='flex' justifyContent='end' flexDirection='column'>
+                        <Divider sx={{ width: '100%', mb: 2}} />
+
+                        {
+                            Object.values(providers).map(( provider: any) => {
+
+                                if(provider.id == 'credentials') return null;
+
+                                let btnStyles = styles.githubBtn;
+
+                                switch(provider.id) {
+                                    case 'github':
+                                        btnStyles = styles.githubBtn;
+                                    break;
+
+                                    case 'facebook':
+                                        btnStyles = styles.facebookBtn;
+                                    break;
+
+                                    case 'google':
+                                        btnStyles = styles.googleBtn;
+                                    break;
+                                }
+
+                                return (
+                                    <Button
+                                        key={provider.id}
+                                        variant='outlined'
+                                        fullWidth
+                                        color='primary'
+                                        sx={{ mb: 1, p: 1 }}
+                                        onClick={() => signIn(provider.id)}
+                                        className={`${btnStyles} ${styles.providerBtn}`}
+                                    >
+                                        {provider.name}
+                                    </Button>
+                                )
+                            })
+                        }
                     </Grid>
 
                 </Grid>
