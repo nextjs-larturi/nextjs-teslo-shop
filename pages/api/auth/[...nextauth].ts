@@ -49,7 +49,7 @@ export default NextAuth({
           break;
 
           case 'oauth':
-            // TODO: Crear user o verificar si existe en la BD
+            token.user = await dbUsers.oAuthToDbUser(user?.email || '', user?.name || '')
           break;
         }
       }
