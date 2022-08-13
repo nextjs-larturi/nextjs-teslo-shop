@@ -1,4 +1,4 @@
-import React, { useContext} from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
@@ -9,10 +9,10 @@ import {
    Grid,
    InputLabel,
    MenuItem,
-   Select,
    TextField,
    Typography,
 } from '@mui/material';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { Box } from '@mui/system';
 import { ShopLayout } from '../../components/layouts/ShopLayout';
 import { jwt, countries } from '../../utils';
@@ -44,15 +44,28 @@ export const AddressPage = () => {
    const router = useRouter();
    const { updateAddress } = useContext(CartContext);
 
+   const [countrySelected, setCountrySelected] = useState('')
+
    const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
-    defaultValues: getAddressFromCookies() 
+      defaultValues: getAddressFromCookies() 
    });
 
    const onSubmitAddress = (data: FormData) => {
+      console.log(data)
       updateAddress( data );
       router.push('/checkout/summary');
    };
 
+   const handleChange = (event: SelectChangeEvent) => {
+      setCountrySelected(event.target.value);
+      Cookies.set('country', event.target.value);
+      updateAddress( getAddressFromCookies());
+    };
+
+    useEffect(() => {
+      setCountrySelected(Cookies.get('country') || countries[0].code)
+    }, [])
+    
    return (
       <ShopLayout
          title='Checkout: Revisar domicilio de destino'
@@ -131,14 +144,13 @@ export const AddressPage = () => {
 
                <Grid item xs={12} sm={6}>
                   <FormControl fullWidth>
-                     <TextField
-                        select
+                     <Select
                         variant='filled'
-                        label='Pais'
-                        defaultValue={Cookies.get('country') || countries[0].code}
+                        value={countrySelected}
                         {...register('country', {
                            required: 'El pais es requerido',
                         })}
+                        onChange={handleChange}
                         error={!!errors.country}
                      >
                         {countries.map((country) => (
@@ -146,7 +158,7 @@ export const AddressPage = () => {
                               {country.name}
                            </MenuItem>
                         ))}
-                     </TextField>
+                     </Select>
                   </FormControl>
                </Grid>
 

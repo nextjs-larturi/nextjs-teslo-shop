@@ -1,4 +1,5 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
+import { useRouter } from 'next/router';
 import NextLink from 'next/link';
 import {
    Button,
@@ -15,9 +16,18 @@ import { ShopLayout } from '../../components/layouts/ShopLayout';
 import { CartList } from '../../components/cart/CartList';
 import { CartContext } from '../../context/cart/CartContext';
 import { countries } from '../../utils';
+import Cookies from 'js-cookie';
 
 export const SumaryPage = () => {
    const { shippingAddress, numberOfItems } = useContext(CartContext);
+
+   const router = useRouter();
+
+   useEffect(() => {
+      if (!Cookies.get('firstName')) {
+         router.push('/checkout/address');
+      }
+   }, [router]);
 
    if (!shippingAddress) {
       return null;
