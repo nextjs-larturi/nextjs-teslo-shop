@@ -97,7 +97,6 @@ export const AuthProvider:FC<Props> = ({ children }) => {
         Cookies.remove('fistName');
         Cookies.remove('lastName');
         Cookies.remove('address');
-        Cookies.remove('address2');
         Cookies.remove('zip');
         Cookies.remove('city');
         Cookies.remove('country');
