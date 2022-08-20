@@ -19,7 +19,7 @@ import { countries } from '../../utils';
 import Cookies from 'js-cookie';
 
 export const SumaryPage = () => {
-   const { shippingAddress, numberOfItems } = useContext(CartContext);
+   const { shippingAddress, numberOfItems, createOrder } = useContext(CartContext);
 
    const router = useRouter();
 
@@ -28,6 +28,11 @@ export const SumaryPage = () => {
          router.push('/checkout/address');
       }
    }, [router]);
+
+   const onCreateOrder = () => {
+      console.log('click')
+      createOrder();
+   }
 
    if (!shippingAddress) {
       return null;
@@ -99,6 +104,7 @@ export const SumaryPage = () => {
                            color='secondary'
                            className='circular-btn'
                            fullWidth
+                           onClick={onCreateOrder}
                         >
                            Confirmar Orden
                         </Button>
