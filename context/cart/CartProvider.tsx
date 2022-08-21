@@ -168,8 +168,6 @@ export const CartProvider: FC<Props> = ({ children }) => {
 
    const createOrder = async () => {
 
-      console.log(state);
-
       if(!state.shippingAddress) {
          throw new Error('No hay direccion de entrega');
       }
@@ -189,6 +187,7 @@ export const CartProvider: FC<Props> = ({ children }) => {
 
       try {
          const { data } = await tesloApi.post('/orders', body);
+         console.log(data);
       } catch (error) {
          console.error(error)
       }

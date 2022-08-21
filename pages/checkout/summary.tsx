@@ -30,7 +30,6 @@ export const SumaryPage = () => {
    }, [router]);
 
    const onCreateOrder = () => {
-      console.log('click')
       createOrder();
    }
 

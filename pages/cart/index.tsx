@@ -15,7 +15,7 @@ import { OrderSummary } from '../../components/cart';
 import { CartContext } from '../../context';
 
 export const CartPage = () => {
-   const { isLoaded, cart } = useContext(CartContext);
+   const { isLoaded, cart, shippingAddress } = useContext(CartContext);
 
    const router = useRouter();
 
@@ -52,7 +52,7 @@ export const CartPage = () => {
                               color='secondary'
                               className='circular-btn'
                               fullWidth
-                              href='/checkout/address'
+                              href={ shippingAddress?.address !== '' ? '/checkout/summary' : '/checkout/address'}
                            >
                               Checkout
                            </Button>
