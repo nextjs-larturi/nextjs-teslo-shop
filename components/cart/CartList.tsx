@@ -11,14 +11,15 @@ import {
 } from '@mui/material';
 import { ItemCounter } from '../ui';
 import { CartContext } from '../../context';
-import { ICartProduct } from '../../interfaces';
+import { ICartProduct, IOrdenItem } from '../../interfaces';
 import { currency } from '../../utils';
 
 interface Props {
    editable?: boolean;
+   products?: IOrdenItem[];
 }
 
-export const CartList: FC<Props> = ({ editable = false }) => {
+export const CartList: FC<Props> = ({ editable = false, products }) => {
    const { cart: productsInCart, updateCartQuantity, removeCartProduct } = useContext(CartContext);
 
    const onNewCartQuantityValue = (product: ICartProduct, newQuantityValue: number) => {
@@ -30,9 +31,11 @@ export const CartList: FC<Props> = ({ editable = false }) => {
       removeCartProduct(product);
    }
 
+   const productsToShow = products ? products : productsInCart;
+
    return (
       <>
-         {productsInCart.map((product) => (
+         {productsToShow.map((product) => (
             <Grid container spacing={2} key={product.slug + '-' + product.size} sx={{ mb: 1 }}>
                <Grid item xs={3}>
                   <NextLink href={`/product/${product.slug}`}>
@@ -60,7 +63,7 @@ export const CartList: FC<Props> = ({ editable = false }) => {
                            <ItemCounter
                               currentValue={product.quantity}
                               maxValue={10}
-                              updatedQuantity={(value) => onNewCartQuantityValue(product, value)}
+                              updatedQuantity={(value) => onNewCartQuantityValue(product as ICartProduct, value)}
                            />
                         </div>
 
@@ -68,7 +71,7 @@ export const CartList: FC<Props> = ({ editable = false }) => {
                           <Button 
                             variant='text' 
                             color='secondary'
-                            onClick={() => removeProductInCart(product) }
+                            onClick={() => removeProductInCart(product as ICartProduct) }
                            >
                             Remover
                           </Button>
