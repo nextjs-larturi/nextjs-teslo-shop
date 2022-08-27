@@ -5,7 +5,7 @@ import { Order } from "../models";
 
 export const getOrderById = async(id: string):Promise<IOrder | null> => {
 
-    if(!isValidObjectId) {
+    if(!isValidObjectId(id)) {
         return null;
     }
 
@@ -18,4 +18,21 @@ export const getOrderById = async(id: string):Promise<IOrder | null> => {
     }
 
     return JSON.parse(JSON.stringify(order));
+}
+
+export const getOrdersByUser = async(userId: string):Promise<IOrder[]> => {
+
+    if(!isValidObjectId(userId)) {
+        return [];
+    }
+
+    await db.connect();
+    const orders = await Order.find({user: userId}).lean();
+    await db.disconnect();
+
+    if(!orders) {
+        return [];
+    }
+
+    return JSON.parse(JSON.stringify(orders));
 }
