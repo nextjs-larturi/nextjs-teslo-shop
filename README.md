@@ -42,6 +42,13 @@ http://localhost:3000/api/seed
 yarn dev
 ```
 
+#### PayPal Test
+
+```bash
+sb-ohlln20346031@personal.example.com
+12345678
+```
+
 ---
 
 ##### Made with ❤️ by Leandro Arturi

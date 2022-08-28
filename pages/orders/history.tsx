@@ -46,7 +46,7 @@ interface Props {
 
 const HistoryPage: NextPage<Props> = ({ orders }) => {
 
-    console.log(orders)
+  // console.log(orders)
 
   const rows: any = [];
 
