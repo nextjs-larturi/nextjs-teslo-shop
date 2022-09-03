@@ -28,6 +28,7 @@ import {
    VpnKeyOutlined,
 } from '@mui/icons-material';
 
+import { DashboardOutlined } from '@mui/icons-material';
 import { UiContext, AuthContext } from '../../context';
 
 export const SideMenu = () => {
@@ -172,6 +173,15 @@ export const SideMenu = () => {
                      <Divider />
                      <ListSubheader>Admin Panel</ListSubheader>
 
+                     <ListItem 
+                        button
+                        onClick={() => navigateTo(`/admin`)}
+                     >
+                        <ListItemIcon>
+                           <DashboardOutlined />
+                        </ListItemIcon>
+                        <ListItemText primary={'Dashboard'} />
+                     </ListItem>
                      <ListItem button>
                         <ListItemIcon>
                            <CategoryOutlined />

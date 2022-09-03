@@ -49,3 +49,23 @@
 .mr-2 {
     margin-left: -8px;
 }
+
+@media screen and (max-width: 600px) {
+    .MuiPaper-root {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .MuiTypography-h3 {
+        text-align: center;
+    }
+
+    .MuiCardContent-root {
+        padding: 1px;
+        width: auto;
+    }
+
+    .MuiSvgIcon-root {
+        font-size: 22px;
+    }
+}
