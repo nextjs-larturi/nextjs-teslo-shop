@@ -1,25 +1,56 @@
 /* eslint-disable @next/next/no-server-import-in-page */
 
-import type { NextRequest } from 'next/server'
-import { NextResponse } from 'next/server'
-import { getToken } from 'next-auth/jwt';
+import { NextFetchEvent, NextRequest, NextResponse } from 'next/server';
+import { getSession } from 'next-auth/react';
 
-export async function middleware(req: NextRequest) {
+export async function middleware(req: NextRequest | any, ev: NextFetchEvent) {
 
-    if (req.nextUrl.pathname.startsWith('/checkout/address')) {
+    const cookie = req.headers.get('cookie');
+    const session: any = await getSession({ req: { headers: {cookie} } as any});
+    const url = req.nextUrl.clone();
 
-        const token = await getToken({
-            req: req,
-            secret:  process.env.NEXTAUTH_SECRET,
-            raw: true,
-          });
+    // console.log(session.user.role);
 
-        // console.log(token)
-
-        if(!token) {
-            return NextResponse.redirect(new URL('/auth/login?p=/checkout/address', req.url))
+    if (req.nextUrl.pathname.startsWith('/admin')) {
+        if(!session) {
+            const requestedPage = req.nextUrl.pathname;
+            return NextResponse.redirect(`${url.origin}/auth/login?prev=${requestedPage}`);
         } 
-        return NextResponse.next();
+
+        const validRoles = ['admin'];
+
+        if(!validRoles.includes(session.user.role)){
+            return NextResponse.redirect(`${url.origin}/auth/login?`);
+        }
     }
 
+    if (req.nextUrl.pathname.startsWith('/api/admin/dashboard')) {
+        if(!session){
+            const requestedPage = req.nextUrl.pathname;
+            return NextResponse.redirect(`${url.origin}/auth/login?prev=${requestedPage}`);
+        }
+    }
+
+    if (req.nextUrl.pathname.startsWith('/checkout/address')) {
+        if(!session) {
+            const requestedPage = req.nextUrl.pathname;
+            return NextResponse.redirect(`${url.origin}/auth/login?prev=${requestedPage}`);
+        } 
+
+        const validRoles = ['admin'];
+
+        if(!validRoles.includes(session.user.role)){
+            return NextResponse.redirect(`${url.origin}/auth/login?`);
+        }
+    }
+    
+    return NextResponse.next();    
+
+}
+
+export const config = {
+    matcher: [
+        '/admin', 
+        '/api/admin/dashboard'
+    ],
 }
