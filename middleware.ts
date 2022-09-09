@@ -28,7 +28,10 @@ export async function middleware(req: NextRequest | any, ev: NextFetchEvent) {
         }
     }
 
-    if (req.nextUrl.pathname.startsWith('/api/admin/dashboard')) {
+    if (
+        req.nextUrl.pathname.startsWith('/api/admin/dashboard') ||
+        req.nextUrl.pathname.startsWith('/api/admin/users')
+    ) {
         if(!session){
             const requestedPage = req.nextUrl.pathname;
             return NextResponse.redirect(`${url.origin}/auth/login?prev=${requestedPage}`);
@@ -56,6 +59,7 @@ export const config = {
     matcher: [
         '/admin', 
         '/admin/users', 
-        '/api/admin/dashboard'
+        '/api/admin/dashboard',
+        '/api/admin/users',
     ],
 }
