@@ -10,8 +10,12 @@ export async function middleware(req: NextRequest | any, ev: NextFetchEvent) {
     const url = req.nextUrl.clone();
 
     // console.log(session.user.role);
+    // console.log(req.nextUrl.pathname);
 
-    if (req.nextUrl.pathname.startsWith('/admin')) {
+    if (
+        req.nextUrl.pathname.startsWith('/admin') ||
+        req.nextUrl.pathname.startsWith('/admin/users')
+    ) {
         if(!session) {
             const requestedPage = req.nextUrl.pathname;
             return NextResponse.redirect(`${url.origin}/auth/login?prev=${requestedPage}`);
@@ -51,6 +55,7 @@ export async function middleware(req: NextRequest | any, ev: NextFetchEvent) {
 export const config = {
     matcher: [
         '/admin', 
+        '/admin/users', 
         '/api/admin/dashboard'
     ],
 }

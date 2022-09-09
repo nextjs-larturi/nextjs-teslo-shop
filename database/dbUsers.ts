@@ -17,8 +17,6 @@ export const checkUserEmailPassword = async (email: string, password: string) =>
 
     const { role, name, _id } = user;
 
-    console.log(user)
-
     return {
         _id,
         email: email.toLowerCase(),
