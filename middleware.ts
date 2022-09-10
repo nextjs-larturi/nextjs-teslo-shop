@@ -12,46 +12,46 @@ export async function middleware(req: NextRequest | any, ev: NextFetchEvent) {
     // console.log(session.user.role);
     // console.log(req.nextUrl.pathname);
 
-    if (
-        req.nextUrl.pathname.startsWith('/admin') ||
-        req.nextUrl.pathname.startsWith('/admin/users') ||
-        req.nextUrl.pathname.startsWith('/admin/orders') 
-    ) {
-        if(!session) {
-            const requestedPage = req.nextUrl.pathname;
-            return NextResponse.redirect(`${url.origin}/auth/login?prev=${requestedPage}`);
-        } 
+    // if (
+    //     req.nextUrl.pathname.startsWith('/admin') ||
+    //     req.nextUrl.pathname.startsWith('/admin/users') ||
+    //     req.nextUrl.pathname.startsWith('/admin/orders') 
+    // ) {
+    //     if(!session) {
+    //         const requestedPage = req.nextUrl.pathname;
+    //         return NextResponse.redirect(`${url.origin}/auth/login?prev=${requestedPage}`);
+    //     } 
 
-        const validRoles = ['admin'];
+    //     const validRoles = ['admin'];
 
-        if(!validRoles.includes(session.user.role)){
-            return NextResponse.redirect(`${url.origin}/auth/login?`);
-        }
-    }
+    //     if(!validRoles.includes(session.user.role)){
+    //         return NextResponse.redirect(`${url.origin}/auth/login?`);
+    //     }
+    // }
 
-    if (
-        req.nextUrl.pathname.startsWith('/api/admin/dashboard') ||
-        req.nextUrl.pathname.startsWith('/api/admin/users') ||
-        req.nextUrl.pathname.startsWith('/api/admin/orders')
-    ) {
-        if(!session){
-            const requestedPage = req.nextUrl.pathname;
-            return NextResponse.redirect(`${url.origin}/auth/login?prev=${requestedPage}`);
-        }
-    }
+    // if (
+    //     req.nextUrl.pathname.startsWith('/api/admin/dashboard') ||
+    //     req.nextUrl.pathname.startsWith('/api/admin/users') ||
+    //     req.nextUrl.pathname.startsWith('/api/admin/orders')
+    // ) {
+    //     if(!session){
+    //         const requestedPage = req.nextUrl.pathname;
+    //         return NextResponse.redirect(`${url.origin}/auth/login?prev=${requestedPage}`);
+    //     }
+    // }
 
-    if (req.nextUrl.pathname.startsWith('/checkout/address')) {
-        if(!session) {
-            const requestedPage = req.nextUrl.pathname;
-            return NextResponse.redirect(`${url.origin}/auth/login?prev=${requestedPage}`);
-        } 
+    // if (req.nextUrl.pathname.startsWith('/checkout/address')) {
+    //     if(!session) {
+    //         const requestedPage = req.nextUrl.pathname;
+    //         return NextResponse.redirect(`${url.origin}/auth/login?prev=${requestedPage}`);
+    //     } 
 
-        const validRoles = ['admin'];
+    //     const validRoles = ['admin'];
 
-        if(!validRoles.includes(session.user.role)){
-            return NextResponse.redirect(`${url.origin}/auth/login?`);
-        }
-    }
+    //     if(!validRoles.includes(session.user.role)){
+    //         return NextResponse.redirect(`${url.origin}/auth/login?`);
+    //     }
+    // }
     
     return NextResponse.next();    
 

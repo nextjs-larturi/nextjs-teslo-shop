@@ -15,6 +15,7 @@ const columns: GridColDef[] = [
     { 
         field: 'isPaid', 
         headerName: 'Pagada', 
+        width: 130,
         renderCell: ({row}: GridValueGetterParams) => {
             return row.isPaid 
                 ? <Chip variant='outlined' label='Pagada' color='success' />
