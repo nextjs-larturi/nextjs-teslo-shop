@@ -10,8 +10,8 @@ import {
    Grid,
    Link,
    Typography,
+   Box
 } from '@mui/material';
-import { Box } from '@mui/system';
 import { OrderSummary } from '../../components/cart';
 import { ShopLayout } from '../../components/layouts/ShopLayout';
 import { CartList } from '../../components/cart/CartList';

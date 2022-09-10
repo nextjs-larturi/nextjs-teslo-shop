@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { DataGrid, GridColDef, GridToolbar, GridValueGetterParams } from '@mui/x-data-grid';
+import { DataGrid, GridColDef, GridToolbar, GridRenderCellParams } from '@mui/x-data-grid';
 
 import { PeopleOutline } from '@mui/icons-material';
 import { AdminLayout } from '../../components/layouts';
@@ -51,7 +51,7 @@ const UsersPage = () => {
         field: 'role', 
         headerName: 'Rol', 
         width: 300,
-        renderCell: ({row}: GridValueGetterParams) => {
+        renderCell: ({row}: GridRenderCellParams) => {
             return (
                 <Select
                     value={row.role}

@@ -2,7 +2,7 @@ import React from 'react';
 import { GetServerSideProps, NextPage } from 'next';
 import NextLink from 'next/link';
 import { Chip, Grid, Typography, Link } from '@mui/material';
-import { DataGrid, GridColDef, GridToolbar, GridValueGetterParams } from '@mui/x-data-grid';
+import { DataGrid, GridColDef, GridRenderCellParams, GridToolbar } from '@mui/x-data-grid';
 import { ShopLayout } from '../../components/layouts';
 import { getSession } from 'next-auth/react';
 import { dbOrders } from '../../database';
@@ -16,7 +16,7 @@ const columns: GridColDef[] = [
         headerName: 'Pago realizado',
         description: 'Puede demorar hasta 24 horas en acreditarse el pago realizado',
         width: 160,
-        renderCell: (params: GridValueGetterParams) => {
+        renderCell: (params: GridRenderCellParams) => {
             return (
                 params.row.paid ?
                 <Chip color='success' label='Pago realizado' variant='outlined' /> :
@@ -29,7 +29,7 @@ const columns: GridColDef[] = [
         headerName: 'Ver Orden', 
         width: 300,
         sortable: false,
-        renderCell: (params: GridValueGetterParams) => {
+        renderCell: (params: GridRenderCellParams) => {
             return (
                 <NextLink href={`/orders/${params.row.orderId}`} passHref>
                     <Link underline='always'>

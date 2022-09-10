@@ -1,11 +1,10 @@
 import { ConfirmationNumberOutlined } from '@mui/icons-material';
 import { Chip, Grid } from '@mui/material';
-import React from 'react';
-import { AdminLayout } from '../../components/layouts';
-import { DataGrid, GridColDef, GridValueGetterParams, GridToolbar } from '@mui/x-data-grid';
+import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
 import useSWR from 'swr';
-import { IOrder, IUser } from '../../interfaces';
 
+import { AdminLayout } from '../../components/layouts';
+import { IOrder, IUser } from '../../interfaces';
 
 const columns: GridColDef[] = [
     { field: 'id', headerName: 'Order Id', width: 220 },
@@ -16,17 +15,17 @@ const columns: GridColDef[] = [
         field: 'isPaid', 
         headerName: 'Pagada', 
         width: 130,
-        renderCell: ({row}: GridValueGetterParams) => {
+        renderCell: ({row}: GridRenderCellParams) => {
             return row.isPaid 
-                ? <Chip variant='outlined' label='Pagada' color='success' />
-                : <Chip variant='outlined' label='Pendiente' color='error' />
+                ? (<Chip variant='outlined' label='Pagada' color='success' />)
+                : (<Chip variant='outlined' label='Pendiente' color='error' />)
         }
     },
     { field: 'noProducts', headerName: 'No. Products', align: 'center' },
     { 
         field: 'check', 
         headerName: 'Ver Orden', 
-        renderCell: ({row}: GridValueGetterParams) => {
+        renderCell: ({row}: GridRenderCellParams) => {
             return (
                 <a href={`/admin/orders/${row.id}`} target="_blank" rel="noreferrer">
                     Ver Orden
@@ -63,7 +62,6 @@ const OrdersPage = () => {
             <Grid item xs={12} sx={{ height: 650, width: '100%'}}>
 
                 <DataGrid 
-                    components={{ Toolbar: GridToolbar }}
                     rows={rows}
                     columns={columns}
                     pageSize={10}

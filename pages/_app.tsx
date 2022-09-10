@@ -25,7 +25,7 @@ function MyApp({ Component, pageProps }: AppProps) {
               <UiProvider>
                 <ThemeProvider theme={lightTheme}>
                   <CssBaseline />
-                  <Component {...pageProps} />
+                  <Component {...pageProps } />
                 </ThemeProvider>
               </UiProvider>
             </CartProvider>
@@ -36,4 +36,4 @@ function MyApp({ Component, pageProps }: AppProps) {
   )
 }
 
-export default MyApp
+export default MyApp;

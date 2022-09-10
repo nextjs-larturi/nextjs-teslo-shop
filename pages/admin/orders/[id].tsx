@@ -1,9 +1,8 @@
 import React from 'react';
 import { GetServerSideProps, NextPage } from 'next';
 import NextLink from 'next/link';
-import { Card, CardContent, Chip, Divider, Grid, Link, Typography } from '@mui/material';
+import { Box, Card, CardContent, Chip, Divider, Grid, Link, Typography } from '@mui/material';
 import { AirplaneTicketOutlined, CreditCardOffOutlined, CreditScoreOutlined } from '@mui/icons-material';
-import { Box } from '@mui/system';
 import { OrderSummary } from '../../../components/cart';
 import { CartList } from '../../../components/cart/CartList';
 import { dbOrders } from '../../../database';

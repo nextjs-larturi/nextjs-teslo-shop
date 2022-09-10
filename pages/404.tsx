@@ -1,5 +1,4 @@
-import { Typography } from "@mui/material";
-import { Box } from "@mui/system";
+import { Box, Typography } from "@mui/material";
 import { ShopLayout } from "../components/layouts";
 
 export const Custom404Page = () => {
