@@ -14,7 +14,8 @@ export async function middleware(req: NextRequest | any, ev: NextFetchEvent) {
 
     if (
         req.nextUrl.pathname.startsWith('/admin') ||
-        req.nextUrl.pathname.startsWith('/admin/users')
+        req.nextUrl.pathname.startsWith('/admin/users') ||
+        req.nextUrl.pathname.startsWith('/admin/orders') 
     ) {
         if(!session) {
             const requestedPage = req.nextUrl.pathname;
@@ -30,7 +31,8 @@ export async function middleware(req: NextRequest | any, ev: NextFetchEvent) {
 
     if (
         req.nextUrl.pathname.startsWith('/api/admin/dashboard') ||
-        req.nextUrl.pathname.startsWith('/api/admin/users')
+        req.nextUrl.pathname.startsWith('/api/admin/users') ||
+        req.nextUrl.pathname.startsWith('/api/admin/orders')
     ) {
         if(!session){
             const requestedPage = req.nextUrl.pathname;
@@ -57,9 +59,14 @@ export async function middleware(req: NextRequest | any, ev: NextFetchEvent) {
 
 export const config = {
     matcher: [
+        // Pages
         '/admin', 
-        '/admin/users', 
+        '/admin/users',
+        '/admin/orders',
+
+        // API
         '/api/admin/dashboard',
         '/api/admin/users',
+        '/api/admin/orders',
     ],
 }
