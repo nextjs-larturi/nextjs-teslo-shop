@@ -14,7 +14,7 @@ export async function middleware( req: NextRequest | any, ev: NextFetchEvent ) {
         });
     }
 
-    const validRoles = ['admin','super-user','SEO'];
+    const validRoles = ['admin','superuser','seo'];
     if ( !validRoles.includes( session.user.role ) ) {
         return new Response( JSON.stringify({ message: 'No autorizado' }), {
             status: 401,

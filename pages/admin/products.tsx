@@ -1,5 +1,6 @@
+import NextLink from 'next/link';
 import { CategoryOutlined } from '@mui/icons-material';
-import { CardMedia, Chip, Grid } from '@mui/material';
+import { CardMedia, Chip, Grid, Link } from '@mui/material';
 import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
 import useSWR from 'swr';
 
@@ -25,7 +26,20 @@ const columns: GridColDef[] = [
            )
         }
     },
-    { field: 'title', headerName: 'Producto', width: 350 },
+    { 
+        field: 'title', 
+        headerName: 'Producto', 
+        width: 350,
+        renderCell: ({row}: GridRenderCellParams) => {
+            return (
+               <NextLink href={`/admin/products/${row.slug}`} passHref>
+                 <Link underline='always'>
+                   { row.title }
+                 </Link>
+               </NextLink>
+            )
+         }
+    },
     { 
         field: 'gender', 
         headerName: 'Genero', 
