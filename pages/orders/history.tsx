@@ -1,14 +1,37 @@
 import React from 'react';
 import { GetServerSideProps, NextPage } from 'next';
 import NextLink from 'next/link';
-import { Chip, Grid, Typography, Link } from '@mui/material';
+import { useRouter } from 'next/router';
+import { Chip, Grid, Typography, Link, Button } from '@mui/material';
 import { DataGrid, GridColDef, GridRenderCellParams, GridToolbar } from '@mui/x-data-grid';
 import { ShopLayout } from '../../components/layouts';
 import { getSession } from 'next-auth/react';
 import { dbOrders } from '../../database';
 import { IOrder } from '../../interfaces';
+import { tesloApi } from '../../api';
 
-const columns: GridColDef[] = [
+interface Props {
+    orders: IOrder[]
+}
+
+const HistoryPage: NextPage<Props> = ({ orders }) => {
+
+  // console.log(orders)
+  
+  const router = useRouter();
+
+  const rows: any = [];
+
+  orders.forEach((order, index) => {
+     rows.push({
+        id: index + 1,
+        orderId: order._id,
+        paid: order.isPaid,
+        fullName: `${order.shippingAddress.firstName} ${order.shippingAddress.lastName}`,
+     })
+  });
+
+  const columns: GridColDef[] = [
     { field: 'id', headerName: 'ID', width: 100 },
     { field: 'fullName', headerName: 'Nombre y Apellido', width: 300 },
     {
@@ -39,25 +62,31 @@ const columns: GridColDef[] = [
             )
         }
     },
-];
-interface Props {
-    orders: IOrder[]
-}
+    { 
+        field: 'delete', 
+        headerName: 'Acciones', 
+        width: 100,
+        renderCell: ({row}: GridRenderCellParams) => {
+            return (
+                !row.paid ? 
+                <Button
+                    value={row.role}
+                    sx={{ width: 300 }}
+                    onClick={() => handleOnDelete(row.orderId)}
+                >
+                Eliminar
+                </Button> : <></>
+            )
+        }
+    },
+  ];
 
-const HistoryPage: NextPage<Props> = ({ orders }) => {
-
-  // console.log(orders)
-
-  const rows: any = [];
-
-  orders.forEach((order, index) => {
-     rows.push({
-        id: index + 1,
-        orderId: order._id,
-        paid: order.isPaid,
-        fullName: `${order.shippingAddress.firstName} ${order.shippingAddress.lastName}`,
-     })
-  });
+  const handleOnDelete = async (orderId: string) => {
+    await tesloApi.delete(`/orders/${orderId}`, {
+        method: 'DELETE'
+    });
+    router.reload();
+  }
 
   return (
     <ShopLayout title='Historial de Ordenes' pageDescription='Historial de Ordenes'>

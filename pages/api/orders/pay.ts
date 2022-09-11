@@ -14,7 +14,6 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Data>)
     switch (req.method) {
         case 'POST':
             return payOrder(req, res);
-            break;
     
         default:
             return res.status(400).json({ message: 'Bad Request' })
