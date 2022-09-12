@@ -1,4 +1,5 @@
-import React, { FC } from 'react'
+import React, { FC, useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
 import { GetServerSideProps } from 'next'
 import { DriveFileRenameOutline, SaveOutlined, UploadOutlined } from '@mui/icons-material';
@@ -17,8 +18,6 @@ import {
     FormGroup, 
     FormLabel, 
     Grid, 
-    ListItem, 
-    Paper, 
     Radio, 
     RadioGroup, 
     TextField 
@@ -27,6 +26,8 @@ import {
 import { dbProducts } from '../../../database';
 import { AdminLayout } from '../../../components/layouts'
 import { IProduct } from '../../../interfaces';
+import { tesloApi } from '../../../api';
+import Product from '../../../models/Product';
 
 const validTypes  = ['shirts','pants','hoodies','hats'];
 const validGender = ['men','women','kid','unisex'];
@@ -52,22 +53,93 @@ interface Props {
 
 const ProductAdminPage:FC<Props> = ({ product }) => {
 
+    const router = useRouter();
+
     const { 
         register, 
         handleSubmit, 
         formState: { errors }, 
         getValues, 
         setValue,
+        watch
     } = useForm<FormData>({
         defaultValues: product
     });
 
-    const onDeleteTag = ( tag: string ) => {
+    const [newTagValue, setNewTagValue] = useState('');
+    const [isSaving, setIsSaving] = useState(false);
 
+    useEffect(() => {
+      const suscription = watch(( value, { name, type } ) => {
+        if(name === 'title') {
+            const newSlug = value.title?.trim()
+                .replaceAll(' ', '-')
+                .replaceAll(',', '')
+                .replaceAll('.', '')
+                .replaceAll("'", '')
+                .toLocaleLowerCase() || '';
+
+            setValue('slug', newSlug);
+        }
+      });
+
+      return () => suscription.unsubscribe();
+
+    }, [watch, setValue]);
+    
+    const onNewTag = () => {
+        const newTag = newTagValue.trim().toLowerCase();
+        setNewTagValue('');
+
+        const currenTags = getValues('tags');
+
+        if(currenTags.includes(newTag)) {
+            return;
+        }
+
+        currenTags.push(newTag);
+
+        setValue('tags', currenTags);
     }
 
-    const onSubmit = ( formData: FormData ) => {
-        console.log(formData);
+    const onDeleteTag = ( tag: string ) => {
+        const updatedTags = getValues('tags').filter(t => t !== tag)
+        setValue('tags', updatedTags, { shouldValidate: true });
+    }
+
+    const onSubmit = async ( formData: FormData ) => {
+        if(formData.images.length < 2) {
+            alert('Minimo 2 imagenes')
+        }
+
+        setIsSaving(true);
+
+        try {
+            const { data } = await tesloApi({
+                url: '/admin/products',
+                method: formData._id ? 'PUT' : 'POST',
+                data: formData
+            });
+
+            if(!formData._id) {
+                router.replace(`/admin/products/${formData.slug}`);
+            } else {
+                setIsSaving(false);
+            }
+        } catch (error) {
+            console.error(error);
+            setIsSaving(false);
+        }
+    }
+
+    const onChangeSize = (size: string) => {
+        const currentSizes = getValues('sizes');
+
+        if(currentSizes.includes(size)) {
+            return setValue('sizes', currentSizes.filter(s => s !== size), {shouldValidate: true});
+        }
+
+        setValue('sizes', [...currentSizes, size], {shouldValidate: true});
     }
 
     return (
@@ -85,6 +157,7 @@ const ProductAdminPage:FC<Props> = ({ product }) => {
                         startIcon={ <SaveOutlined /> }
                         sx={{ width: '150px' }}
                         type="submit"
+                        disabled={isSaving}
                         >
                         Guardar
                     </Button>
@@ -195,7 +268,12 @@ const ProductAdminPage:FC<Props> = ({ product }) => {
                             <FormLabel>Tallas</FormLabel>
                             {
                                 validSizes.map(size => (
-                                    <FormControlLabel key={size} control={<Checkbox />} label={ size } />
+                                    <FormControlLabel 
+                                        key={size} 
+                                        control={<Checkbox checked={getValues('sizes').includes(size)} />} 
+                                        label={ size } 
+                                        onChange={() => onChangeSize(size)}
+                                    />
                                 ))
                             }
                         </FormGroup>
@@ -223,6 +301,9 @@ const ProductAdminPage:FC<Props> = ({ product }) => {
                             fullWidth 
                             sx={{ mb: 1 }}
                             helperText="Presiona [spacebar] para agregar"
+                            value={newTagValue}
+                            onChange={({target}) => setNewTagValue(target.value) }
+                            onKeyUp={({code}) => code === 'Space' ? onNewTag() : undefined }
                         />
                         
                         <Box sx={{
@@ -234,7 +315,7 @@ const ProductAdminPage:FC<Props> = ({ product }) => {
                         }}
                         component="ul">
                             {
-                                product.tags.map((tag) => {
+                                getValues('tags').map((tag) => {
 
                                 return (
                                     <Chip
@@ -306,8 +387,19 @@ const ProductAdminPage:FC<Props> = ({ product }) => {
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
     
     const { slug = ''} = query;
-    
-    const product = await dbProducts.getProductBySlug(slug.toString());
+
+    let product: IProduct | null;
+
+    if(slug == 'new'){
+        // Crear producto
+        const tempProduct = JSON.parse(JSON.stringify(new Product()));
+        delete tempProduct._id;
+        tempProduct.images = ['img1.jpg', 'img2.jpg'];
+        product = tempProduct;
+    } else {
+        // Update producto
+        product = await dbProducts.getProductBySlug(slug.toString());
+    }
 
     if ( !product ) {
         return {
