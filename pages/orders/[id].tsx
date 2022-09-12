@@ -51,7 +51,7 @@ export const OrderPage: NextPage<Props> = ({order}) => {
         router.reload();
     } catch (error) {
         setIsPaying(false);
-        console.log(error);
+        console.error(error);
     }
 
   }
@@ -210,6 +210,13 @@ export const getServerSideProps: GetServerSideProps = async ({req, query}) => {
             }
         }
     }
+
+    order.orderItems = order.orderItems.map(product => {
+        product.image = product.image.includes('http')
+          ? product.image
+          : `${process.env.HOST_NAME}/products/${product.image}`;
+        return product;
+    });
 
     return {
         props: {

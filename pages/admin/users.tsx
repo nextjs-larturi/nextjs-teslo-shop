@@ -39,7 +39,7 @@ const UsersPage = () => {
     } catch (error) {
         alert('No se pudo actualizar');
         setUsers(previousUsers);
-        console.log(error);
+        console.error(error);
     }
 
   }
