@@ -5,12 +5,11 @@ import {
    Button,
    Card,
    CardContent,
-   Chip,
    Divider,
    Grid,
    Link,
    Typography,
-   Box
+   Box,
 } from '@mui/material';
 import { OrderSummary } from '../../components/cart';
 import { ShopLayout } from '../../components/layouts/ShopLayout';
@@ -20,7 +19,8 @@ import { countries } from '../../utils';
 import Cookies from 'js-cookie';
 
 export const SumaryPage = () => {
-   const { shippingAddress, numberOfItems, createOrder } = useContext(CartContext);
+   const { shippingAddress, numberOfItems, createOrder } =
+      useContext(CartContext);
 
    const [isPosting, setIsPosting] = useState(false);
    const [errorMessage, setErrorMessage] = useState('');
@@ -37,15 +37,14 @@ export const SumaryPage = () => {
       setIsPosting(true);
       const { hasError, message } = await createOrder();
 
-      if (hasError){
+      if (hasError) {
          setIsPosting(false);
          setErrorMessage(message);
          return;
       }
 
-      router.replace(`/orders/${message}`)
-
-   }
+      router.replace(`/orders/${message}`);
+   };
 
    if (!shippingAddress) {
       return null;
@@ -123,10 +122,12 @@ export const SumaryPage = () => {
                            Confirmar Orden
                         </Button>
 
-                        <Chip 
+                        <Box
                            color='error'
-                           label={errorMessage}
-                           sx={{ display: errorMessage ? 'flex' : 'none', mt: 2 }}
+                           sx={{
+                              display: errorMessage ? 'flex' : 'none',
+                              mt: 2,
+                           }}
                         />
                      </Box>
                   </CardContent>

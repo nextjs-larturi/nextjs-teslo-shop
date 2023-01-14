@@ -1,5 +1,4 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
 import Cookies from 'js-cookie';
@@ -7,11 +6,10 @@ import {
    Button,
    FormControl,
    Grid,
-   InputLabel,
    MenuItem,
    TextField,
    Typography,
-   Box
+   Box,
 } from '@mui/material';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { ShopLayout } from '../../components/layouts/ShopLayout';
@@ -29,42 +27,46 @@ type FormData = {
 };
 
 const getAddressFromCookies = (): FormData => {
-    return {
-       firstName: Cookies.get('firstName') || '',
-       lastName: Cookies.get('lastName') || '',
-       address: Cookies.get('address') || '',
-       zip: Cookies.get('zip') || '',
-       city: Cookies.get('city') || '',
-       country: Cookies.get('country') || '',
-       phone: Cookies.get('phone') || '',
-    };
- };
+   return {
+      firstName: Cookies.get('firstName') || '',
+      lastName: Cookies.get('lastName') || '',
+      address: Cookies.get('address') || '',
+      zip: Cookies.get('zip') || '',
+      city: Cookies.get('city') || '',
+      country: Cookies.get('country') || '',
+      phone: Cookies.get('phone') || '',
+   };
+};
 
 export const AddressPage = () => {
    const router = useRouter();
    const { updateAddress } = useContext(CartContext);
 
-   const [countrySelected, setCountrySelected] = useState('')
+   const [countrySelected, setCountrySelected] = useState('');
 
-   const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
-      defaultValues: getAddressFromCookies() 
+   const {
+      register,
+      handleSubmit,
+      formState: { errors },
+   } = useForm<FormData>({
+      defaultValues: getAddressFromCookies(),
    });
 
    const onSubmitAddress = (data: FormData) => {
-      updateAddress( data );
+      updateAddress(data);
       router.push('/checkout/summary');
    };
 
    const handleChange = (event: SelectChangeEvent) => {
       setCountrySelected(event.target.value);
       Cookies.set('country', event.target.value);
-      updateAddress( getAddressFromCookies());
-    };
+      updateAddress(getAddressFromCookies());
+   };
 
-    useEffect(() => {
-      setCountrySelected(Cookies.get('country') || countries[0].code)
-    }, [])
-    
+   useEffect(() => {
+      setCountrySelected(Cookies.get('country') || countries[0].code);
+   }, []);
+
    return (
       <ShopLayout
          title='Checkout: Revisar domicilio de destino'
