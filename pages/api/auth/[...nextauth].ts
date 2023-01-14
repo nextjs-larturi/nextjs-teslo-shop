@@ -4,7 +4,12 @@ import GithubProvider from 'next-auth/providers/github';
 import GoogleProvider from "next-auth/providers/google";
 import FacebookProvider from "next-auth/providers/facebook";
 import { dbUsers } from '../../../database';
-import { checkUserEmailPassword } from '../../../database/dbUsers';
+
+declare module "next-auth" {
+  interface Session {
+    accessToken?: string;
+  }
+}
 
 export default NextAuth({
   providers: [
@@ -72,7 +77,7 @@ export default NextAuth({
     async session({ session, token, user }) {
       // console.log({ session, token, user })
 
-      session.accessToken = token.accessToken;
+      session.accessToken = token.accessToken as any;
       session.user = token.user as any;
 
       return session;

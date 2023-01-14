@@ -5,7 +5,7 @@ import axios from 'axios';
 import { CartContext, cartReducer } from './';
 import { ICartProduct } from '../../interfaces/cart';
 import { IOrder, ShippingAddress } from '../../interfaces';
-import { tesloApi } from '../../api';
+import { tesloApi } from '../../axiosApi';
 
 export interface CartState {
    isLoaded: boolean;
@@ -167,16 +167,18 @@ export const CartProvider: FC<Props> = ({ children }) => {
       dispatch({ type: 'UPDATE_ADDRESS', payload: address });
    };
 
-   const createOrder = async (): Promise<{ hasError: boolean; message: string; }> => {
-
-      if(!state.shippingAddress) {
+   const createOrder = async (): Promise<{
+      hasError: boolean;
+      message: string;
+   }> => {
+      if (!state.shippingAddress) {
          throw new Error('No hay direccion de entrega');
       }
 
       const body: IOrder = {
-         orderItems: state.cart.map(p => ({
+         orderItems: state.cart.map((p) => ({
             ...p,
-            size: p.size!
+            size: p.size!,
          })),
          shippingAddress: state.shippingAddress,
          numberOfItems: state.numberOfItems,
@@ -184,29 +186,29 @@ export const CartProvider: FC<Props> = ({ children }) => {
          tax: state.tax,
          total: state.total,
          isPaid: false,
-      }
+      };
 
       try {
          const { data } = await tesloApi.post<IOrder>('/orders', body);
 
-         dispatch({ type: 'CART_ORDER_COMPLETE' }); 
-         
+         dispatch({ type: 'CART_ORDER_COMPLETE' });
+
          return {
             hasError: false,
             message: data._id!,
-         }
+         };
       } catch (error) {
-         if(axios.isAxiosError(error)) {
+         if (axios.isAxiosError(error)) {
             return {
                hasError: true,
-               message: 'Error al intentar grabar la orden en la base de datos'
-            }
+               message: 'Error al intentar grabar la orden en la base de datos',
+            };
          }
 
          return {
             hasError: true,
-            message: 'Error al intentar grabar la orden en la base de datos'
-         }
+            message: 'Error al intentar grabar la orden en la base de datos',
+         };
       }
    };
 

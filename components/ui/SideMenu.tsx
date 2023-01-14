@@ -62,7 +62,7 @@ export const SideMenu = () => {
 
    const onLogout = () => {
       logout();
-   }
+   };
 
    return (
       <Drawer
@@ -95,14 +95,17 @@ export const SideMenu = () => {
 
                {isLoggedIn && (
                   <>
-                     <ListItem button>
+                     {/* <ListItem button>
                         <ListItemIcon>
                            <AccountCircleOutlined />
                         </ListItemIcon>
                         <ListItemText primary={'Perfil'} />
-                     </ListItem>
+                     </ListItem> */}
 
-                     <ListItem button onClick={() => navigateTo('/orders/history')}>
+                     <ListItem
+                        button
+                        onClick={() => navigateTo('/orders/history')}
+                     >
                         <ListItemIcon>
                            <ConfirmationNumberOutlined />
                         </ListItemIcon>
@@ -145,19 +148,18 @@ export const SideMenu = () => {
                </ListItem>
 
                {isLoggedIn ? (
-                  <ListItem 
-                     button
-                     onClick={onLogout}
-                  >
+                  <ListItem button onClick={onLogout}>
                      <ListItemIcon>
                         <LoginOutlined />
                      </ListItemIcon>
                      <ListItemText primary={'Salir'} />
                   </ListItem>
                ) : (
-                  <ListItem 
+                  <ListItem
                      button
-                     onClick={() => navigateTo(`/auth/login?p=${router.asPath}`)}
+                     onClick={() =>
+                        navigateTo(`/auth/login?p=${router.asPath}`)
+                     }
                   >
                      <ListItemIcon>
                         <VpnKeyOutlined />
@@ -173,16 +175,13 @@ export const SideMenu = () => {
                      <Divider />
                      <ListSubheader>Admin Panel</ListSubheader>
 
-                     <ListItem 
-                        button
-                        onClick={() => navigateTo(`/admin`)}
-                     >
+                     <ListItem button onClick={() => navigateTo(`/admin`)}>
                         <ListItemIcon>
                            <DashboardOutlined />
                         </ListItemIcon>
                         <ListItemText primary={'Dashboard'} />
                      </ListItem>
-                     <ListItem 
+                     <ListItem
                         button
                         onClick={() => navigateTo(`/admin/products`)}
                      >
@@ -191,7 +190,7 @@ export const SideMenu = () => {
                         </ListItemIcon>
                         <ListItemText primary={'Productos'} />
                      </ListItem>
-                     <ListItem 
+                     <ListItem
                         button
                         onClick={() => navigateTo(`/admin/orders`)}
                      >
@@ -201,7 +200,7 @@ export const SideMenu = () => {
                         <ListItemText primary={'Ordenes'} />
                      </ListItem>
 
-                     <ListItem 
+                     <ListItem
                         button
                         onClick={() => navigateTo(`/admin/users`)}
                      >

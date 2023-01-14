@@ -1,104 +1,103 @@
 import React, { useEffect, useState } from 'react';
-import { DataGrid, GridColDef, GridToolbar, GridRenderCellParams } from '@mui/x-data-grid';
+import {
+   DataGrid,
+   GridColDef,
+   GridToolbar,
+   GridRenderCellParams,
+} from '@mui/x-data-grid';
 
 import { PeopleOutline } from '@mui/icons-material';
 import { AdminLayout } from '../../components/layouts';
 import { Grid, MenuItem, Select } from '@mui/material';
 import useSWR from 'swr';
 import { IUser } from '../../interfaces';
-import { tesloApi } from '../../api';
+import { tesloApi } from '../../axiosApi';
 
 const UsersPage = () => {
+   const { data, error } = useSWR<IUser[]>('/api/admin/users');
 
-  const { data, error } = useSWR<IUser[]>('/api/admin/users');
+   const [users, setUsers] = useState<IUser[]>([]);
 
-  const [users, setUsers] = useState<IUser[]>([]);
+   useEffect(() => {
+      if (data) {
+         setUsers(data);
+      }
+   }, [data]);
 
-  useEffect(() => {
-   if(data) {
-    setUsers(data);
-   }
-  }, [data])
-  
+   if (!data && !error) return <></>;
 
-  if(!data && !error) return <></>;
+   const onRoleUpdated = async (userId: string, newRole: string) => {
+      const previousUsers = users.map((user) => ({ ...user }));
 
-  const onRoleUpdated = async (userId: string, newRole: string) => {
+      const updatedUsers = users.map((user) => ({
+         ...user,
+         role: user._id === userId ? newRole : user.role,
+      }));
 
-    const previousUsers = users.map(user => ({ ...user }));
+      setUsers(updatedUsers);
 
-    const updatedUsers = users.map(user => ({
-        ...user,
-        role: user._id === userId ? newRole : user.role
-    }));
+      try {
+         await tesloApi.put('/admin/users', { userId, role: newRole });
+      } catch (error) {
+         alert('No se pudo actualizar');
+         setUsers(previousUsers);
+         console.error(error);
+      }
+   };
 
-    setUsers(updatedUsers);
-
-    try {
-        await tesloApi.put('/admin/users', {userId, role: newRole});
-    } catch (error) {
-        alert('No se pudo actualizar');
-        setUsers(previousUsers);
-        console.error(error);
-    }
-
-  }
-
-  const columns: GridColDef[] = [
-    { field: 'email', headerName: 'Email', width: 250 },
-    { field: 'name', headerName: 'Nombre Completo', width: 300 },
-    { 
-        field: 'role', 
-        headerName: 'Rol', 
-        width: 300,
-        renderCell: ({row}: GridRenderCellParams) => {
+   const columns: GridColDef[] = [
+      { field: 'email', headerName: 'Email', width: 250 },
+      { field: 'name', headerName: 'Nombre Completo', width: 300 },
+      {
+         field: 'role',
+         headerName: 'Rol',
+         width: 300,
+         renderCell: ({ row }: GridRenderCellParams) => {
             return (
-                <Select
-                    value={row.role}
-                    label="Rol"
-                    sx={{ width: 300 }}
-                    onChange={({ target }) => onRoleUpdated(row.id, target.value)}
-                >
-                    <MenuItem value="admin">Administrador</MenuItem>
-                    <MenuItem value="client">Cliente</MenuItem>
-                    <MenuItem value="superuser">Superuser</MenuItem>
-                    <MenuItem value="seo">Seo</MenuItem>
-                </Select>
-            )
-        }
-    },
-  ];
+               <Select
+                  value={row.role}
+                  label='Rol'
+                  sx={{ width: 300 }}
+                  onChange={({ target }) => onRoleUpdated(row.id, target.value)}
+               >
+                  <MenuItem value='admin'>Administrador</MenuItem>
+                  <MenuItem value='client'>Cliente</MenuItem>
+                  <MenuItem value='superuser'>Superuser</MenuItem>
+                  <MenuItem value='seo'>Seo</MenuItem>
+               </Select>
+            );
+         },
+      },
+   ];
 
-  const rows = users!.map(user => ({
-    id: user._id,
-    email: user.email,
-    name: user.name,
-    role: user.role
-  }));
+   const rows = users!.map((user) => ({
+      id: user._id,
+      email: user.email,
+      name: user.name,
+      role: user.role,
+   }));
 
-  return (
-    <AdminLayout
-        title='Usuarios'
-        subtitle='Administración de Usuarios'
-        icon={<PeopleOutline />}
-    >
-        <Grid container className='fadeIn'>
-            <Grid item xs={12} sx={{ height: 650, width: '100%'}}>
-
-                <DataGrid 
-                    components={{ Toolbar: GridToolbar }}
-                    rows={rows}
-                    columns={columns}
-                    pageSize={10}
-                    rowsPerPageOptions={[10]}
-                    hideFooterSelectedRowCount={true}
-                    disableSelectionOnClick={true}
-                />
-
+   return (
+      <AdminLayout
+         title='Usuarios'
+         subtitle='Administración de Usuarios'
+         icon={<PeopleOutline />}
+      >
+         <Grid container className='fadeIn'>
+            <Grid item xs={12} sx={{ height: 650, width: '100%' }}>
+               <DataGrid
+                  components={{ Toolbar: GridToolbar }}
+                  rows={rows}
+                  columns={columns}
+                  pageSize={10}
+                  rowsPerPageOptions={[10]}
+                  hideFooterSelectedRowCount={true}
+                  disableSelectionOnClick={true}
+               />
             </Grid>
-        </Grid>
-    </AdminLayout>
-  )
-}
+         </Grid>
+      </AdminLayout>
+   );
+};
 
 export default UsersPage;

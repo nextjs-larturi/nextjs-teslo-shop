@@ -1,8 +1,9 @@
 import { db } from './';
 import bcrypt from 'bcryptjs';
 import User from '../models/User';
+import { Awaitable } from 'next-auth';
 
-export const checkUserEmailPassword = async (email: string, password: string) => {
+export const checkUserEmailPassword: Awaitable<any> = async (email: string, password: string) => {
     await db.connect();
     const user = await User.findOne({ email });
     await db.disconnect();
