@@ -95,12 +95,12 @@ export const SideMenu = () => {
 
                {isLoggedIn && (
                   <>
-                     {/* <ListItem button>
+                     <ListItem button>
                         <ListItemIcon>
                            <AccountCircleOutlined />
                         </ListItemIcon>
                         <ListItemText primary={'Perfil'} />
-                     </ListItem> */}
+                     </ListItem>
 
                      <ListItem
                         button

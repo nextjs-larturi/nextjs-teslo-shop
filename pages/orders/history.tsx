@@ -63,7 +63,11 @@ const HistoryPage: NextPage<Props> = ({ orders }) => {
          sortable: false,
          renderCell: (params: GridRenderCellParams) => {
             return (
-               <NextLink href={`/orders/${params.row.orderId}`} passHref>
+               <NextLink
+                  href={`/orders/${params.row.orderId}`}
+                  passHref
+                  legacyBehavior
+               >
                   <Link underline='always'>Ver Orden</Link>
                </NextLink>
             );
