@@ -1,6 +1,6 @@
 # Next.js - Teslo Shop
 
-## Teslo e-shopp: Next.js, MongoDB, Docker
+## Teslo e-shopp: Next.js v13.1.1, MongoDB, Docker
 
 ---
 
